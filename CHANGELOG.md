@@ -1,5 +1,12 @@
 # Changelog
 
+## [9.3.6](https://github.com/elastic/go-elasticsearch/compare/v9.3.5...v9.3.6) (2026-07-09)
+
+
+### Features
+
+* **Typed API:** Update 9.3 client to spec 17fab0b ([#1531](https://github.com/elastic/go-elasticsearch/issues/1531)) ([02eb5fd](https://github.com/elastic/go-elasticsearch/commit/02eb5fd2c6375c60610ba06850a35fbed04bd625))
+
 ## [9.3.5](https://github.com/elastic/go-elasticsearch/compare/v9.3.4...v9.3.5) (2026-06-22)
 
 
