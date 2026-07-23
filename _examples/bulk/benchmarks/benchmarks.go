@@ -1,28 +1,5 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 //go:build ignore
 // +build ignore
-
-// This example demonstrates indexing documents using the esutil.BulkIndexer helper.
-//
-// You can configure the settings with command line flags:
-//
-//     go run benchmark.go --dataset=httplog --runs=15 --count=1_000_000 --shards=5 --replicas=1 --flush=1MB
 
 package main
 
@@ -38,25 +15,19 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/mailru/easyjson"
 	"github.com/valyala/fasthttp"
 
 	"github.com/elastic/elastic-transport-go/v8/elastictransport"
 	"github.com/elastic/go-elasticsearch/v9"
 	"github.com/elastic/go-elasticsearch/v9/esutil"
 
-	"github.com/elastic/go-elasticsearch/v9/_examples/bulk/benchmarks/model"
 	"github.com/elastic/go-elasticsearch/v9/_examples/bulk/benchmarks/runner"
 )
 
 type humanBytes uint64
 
-func (b *humanBytes) String() string { return humanize.Bytes(uint64(*b)) }
-func (b *humanBytes) Set(v string) error {
-	n, err := humanize.ParseBytes(v)
-	*b = humanBytes(n)
-	return err
-}
+func (b *humanBytes) String() string     { _ = "STUB: not implemented"; return "" }
+func (b *humanBytes) Set(v string) error { _ = "STUB: not implemented"; return nil }
 
 var (
 	indexName     string
@@ -171,82 +142,26 @@ func main() {
 	runner.Run()
 }
 
-// easyjsonDecoder implements a JSON decoder for the indexer
-// via the "github.com/mailru/easyjson" package.
-// See _examples/encoding for a demo.
-
 type easyjsonDecoder struct{}
 
 func (d easyjsonDecoder) UnmarshalFromReader(r io.Reader, blk *esutil.BulkIndexerResponse) error {
-	var v model.BulkIndexerResponse
-	if err := easyjson.UnmarshalFromReader(r, &v); err != nil {
-		return err
-	}
-	blk.Took = v.Took
-	blk.HasErrors = v.HasErrors
-	blk.Items = v.Items
-
+	_ = "STUB: not implemented"
 	return nil
 }
-
-// fasthttpTransport implements HTTP transport for the Elasticsearch client
-// via the "github.com/valyala/fasthttp" package.
-// See _examples/fasthttp for a demo.
 
 type fasthttpTransport struct{}
 
 func (t *fasthttpTransport) RoundTrip(req *http.Request) (*http.Response, error) {
-	freq := fasthttp.AcquireRequest()
-	defer fasthttp.ReleaseRequest(freq)
-
-	fres := fasthttp.AcquireResponse()
-	defer fasthttp.ReleaseResponse(fres)
-
-	t.copyRequest(freq, req)
-
-	err := fasthttp.Do(freq, fres)
-	if err != nil {
-		return nil, err
-	}
-
-	res := &http.Response{Header: make(http.Header)}
-	t.copyResponse(res, fres)
-
-	return res, nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
 func (t *fasthttpTransport) copyRequest(dst *fasthttp.Request, src *http.Request) *fasthttp.Request {
-	if src.Method == "GET" && src.Body != nil {
-		src.Method = "POST"
-	}
-
-	dst.SetHost(src.Host)
-	dst.SetRequestURI(src.URL.String())
-
-	dst.Header.SetRequestURI(src.URL.String())
-	dst.Header.SetMethod(src.Method)
-
-	for k, vv := range src.Header {
-		for _, v := range vv {
-			dst.Header.Set(k, v)
-		}
-	}
-
-	if src.Body != nil {
-		dst.SetBodyStream(src.Body, -1)
-	}
-
-	return dst
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (t *fasthttpTransport) copyResponse(dst *http.Response, src *fasthttp.Response) *http.Response {
-	dst.StatusCode = src.StatusCode()
-
-	src.Header.VisitAll(func(k, v []byte) {
-		dst.Header.Set(string(k), string(v))
-	})
-
-	dst.Body = io.NopCloser(strings.NewReader(string(src.Body())))
-
-	return dst
+	_ = "STUB: not implemented"
+	return nil
 }

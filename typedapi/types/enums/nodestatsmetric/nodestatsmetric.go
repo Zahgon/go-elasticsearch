@@ -1,29 +1,5 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// Code generated from the elasticsearch-specification DO NOT EDIT.
-// https://github.com/elastic/elasticsearch-specification/tree/37285cbd3fd155f913b50d880b40ec45f9df64b3
-
-// Package nodestatsmetric
 package nodestatsmetric
 
-import "strings"
-
-// https://github.com/elastic/elasticsearch-specification/blob/37285cbd3fd155f913b50d880b40ec45f9df64b3/specification/nodes/stats/NodesStatsRequest.ts#L112-L133
 type NodeStatsMetric struct {
 	Name string
 }
@@ -69,57 +45,10 @@ var (
 )
 
 func (n NodeStatsMetric) MarshalText() (text []byte, err error) {
-	return []byte(n.String()), nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (n *NodeStatsMetric) UnmarshalText(text []byte) error {
-	switch strings.ReplaceAll(strings.ToLower(string(text)), "\"", "") {
+func (n *NodeStatsMetric) UnmarshalText(text []byte) error { _ = "STUB: not implemented"; return nil }
 
-	case "_all":
-		*n = All
-	case "_none":
-		*n = None
-	case "indices":
-		*n = Indices
-	case "os":
-		*n = Os
-	case "process":
-		*n = Process
-	case "jvm":
-		*n = Jvm
-	case "thread_pool":
-		*n = Threadpool
-	case "fs":
-		*n = Fs
-	case "transport":
-		*n = Transport
-	case "http":
-		*n = Http
-	case "breaker":
-		*n = Breaker
-	case "script":
-		*n = Script
-	case "discovery":
-		*n = Discovery
-	case "ingest":
-		*n = Ingest
-	case "adaptive_selection":
-		*n = Adaptiveselection
-	case "script_cache":
-		*n = Scriptcache
-	case "indexing_pressure":
-		*n = Indexingpressure
-	case "repositories":
-		*n = Repositories
-	case "allocations":
-		*n = Allocations
-	default:
-		*n = NodeStatsMetric{string(text)}
-	}
-
-	return nil
-}
-
-func (n NodeStatsMetric) String() string {
-	return n.Name
-}
+func (n NodeStatsMetric) String() string { _ = "STUB: not implemented"; return "" }

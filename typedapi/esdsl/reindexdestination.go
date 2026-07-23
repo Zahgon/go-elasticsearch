@@ -1,23 +1,3 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// Code generated from the elasticsearch-specification DO NOT EDIT.
-// https://github.com/elastic/elasticsearch-specification/tree/37285cbd3fd155f913b50d880b40ec45f9df64b3
-
 package esdsl
 
 import (
@@ -30,45 +10,34 @@ type _reindexDestination struct {
 	v *types.ReindexDestination
 }
 
-func NewReindexDestination() *_reindexDestination {
-
-	return &_reindexDestination{v: types.NewReindexDestination()}
-
-}
+func NewReindexDestination() *_reindexDestination { _ = "STUB: not implemented"; return nil }
 
 func (s *_reindexDestination) Index(indexname string) *_reindexDestination {
-
-	s.v.Index = indexname
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_reindexDestination) OpType(optype optype.OpType) *_reindexDestination {
-
-	s.v.OpType = &optype
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_reindexDestination) Pipeline(pipeline string) *_reindexDestination {
-
-	s.v.Pipeline = &pipeline
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_reindexDestination) Routing(routing string) *_reindexDestination {
-
-	s.v.Routing = &routing
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_reindexDestination) VersionType(versiontype versiontype.VersionType) *_reindexDestination {
-
-	s.v.VersionType = &versiontype
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_reindexDestination) ReindexDestinationCaster() *types.ReindexDestination {
-	return s.v
+	_ = "STUB: not implemented"
+	return nil
 }

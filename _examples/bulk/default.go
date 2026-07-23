@@ -1,34 +1,6 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 //go:build bulk_default
 // +build bulk_default
 
-// This example demonstrates indexing documents using the Elasticsearch "Bulk" API
-// [https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-bulk.html].
-//
-// You can configure the number of documents and the batch size with command line flags:
-//
-//	go run default.go -count=10000 -batch=2500
-//
-// The example intentionally doesn't use any abstractions or helper functions, to
-// demonstrate the low-level mechanics of working with the Bulk API: preparing
-// the meta+data payloads, sending the payloads in batches,
-// inspecting the error results, and printing a report.
 package main
 
 import (
@@ -120,8 +92,6 @@ func main() {
 		humanize.Comma(int64(count)), humanize.Comma(int64(batch)))
 	log.Println(strings.Repeat("▁", 65))
 
-	// Create the Elasticsearch client
-	//
 	es, err := elasticsearch.New()
 	if err != nil {
 		log.Fatalf("Error creating the client: %s", err)
@@ -134,8 +104,6 @@ func main() {
 		}
 	}()
 
-	// Generate the articles collection
-	//
 	names := []string{"Alice", "John", "Mary"}
 	for i := 1; i < count+1; i++ {
 		articles = append(articles, &Article{
@@ -152,8 +120,6 @@ func main() {
 	log.Printf("→ Generated %s articles", humanize.Comma(int64(len(articles))))
 	fmt.Print("→ Sending batch ")
 
-	// Re-create the index
-	//
 	if res, err = es.Indices.Delete([]string{indexName}); err != nil {
 		log.Fatalf("Cannot delete index: %s", err)
 	}
@@ -173,8 +139,6 @@ func main() {
 
 	start := time.Now().UTC()
 
-	// Loop over the collection
-	//
 	for i, a := range articles {
 		numItems++
 
@@ -183,37 +147,19 @@ func main() {
 			currBatch++
 		}
 
-		// Prepare the metadata payload
-		//
 		meta := []byte(fmt.Sprintf(`{ "index" : { "_id" : "%d" } }%s`, a.ID, "\n"))
-		// fmt.Printf("%s", meta) // <-- Uncomment to see the payload
 
-		// Prepare the data payload: encode article to JSON
-		//
 		data, err := json.Marshal(a)
 		if err != nil {
 			log.Fatalf("Cannot encode article %d: %s", a.ID, err)
 		}
 
-		// Append newline to the data payload
-		//
-		data = append(data, "\n"...) // <-- Comment out to trigger failure for batch
-		// fmt.Printf("%s", data) // <-- Uncomment to see the payload
+		data = append(data, "\n"...)
 
-		// // Uncomment next block to trigger indexing errors -->
-		// if a.ID == 11 || a.ID == 101 {
-		// 	data = []byte(`{"published" : "INCORRECT"}` + "\n")
-		// }
-		// // <--------------------------------------------------
-
-		// Append payloads to the buffer (ignoring write errors)
-		//
 		buf.Grow(len(meta) + len(data))
 		buf.Write(meta)
 		buf.Write(data)
 
-		// When a threshold is reached, execute the Bulk() request with body from buffer
-		//
 		if i > 0 && i%batch == 0 || i == count-1 {
 			fmt.Printf("[%d/%d] ", currBatch, numBatches)
 
@@ -221,8 +167,7 @@ func main() {
 			if err != nil {
 				log.Fatalf("Failure indexing batch %d: %s", currBatch, err)
 			}
-			// If the whole request failed, print error and mark all documents as failed
-			//
+
 			if res.IsError() {
 				numErrors += numItems
 				if err := json.NewDecoder(res.Body).Decode(&raw); err != nil {
@@ -234,21 +179,17 @@ func main() {
 						raw["error"].(map[string]interface{})["reason"],
 					)
 				}
-				// A successful response might still contain errors for particular documents...
-				//
+
 			} else {
 				if err := json.NewDecoder(res.Body).Decode(&blk); err != nil {
 					log.Fatalf("Failure to to parse response body: %s", err)
 				} else {
 					for _, d := range blk.Items {
-						// ... so for any HTTP status above 201 ...
-						//
+
 						if d.Index.Status > 201 {
-							// ... increment the error counter ...
-							//
+
 							numErrors++
 
-							// ... and print the response status and error information ...
 							log.Printf("  Error: [%d]: %s: %s: %s: %s",
 								d.Index.Status,
 								d.Index.Error.Type,
@@ -257,27 +198,20 @@ func main() {
 								d.Index.Error.Cause.Reason,
 							)
 						} else {
-							// ... otherwise increase the success counter.
-							//
+
 							numIndexed++
 						}
 					}
 				}
 			}
 
-			// Close the response body, to prevent reaching the limit for goroutines or file handles
-			//
 			res.Body.Close()
 
-			// Reset the buffer and items counter
-			//
 			buf.Reset()
 			numItems = 0
 		}
 	}
 
-	// Report the results: number of indexed docs, number of errors, duration, indexing rate
-	//
 	fmt.Print("\n")
 	log.Println(strings.Repeat("▔", 65))
 

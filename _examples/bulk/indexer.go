@@ -1,28 +1,6 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 //go:build bulk_indexer
 // +build bulk_indexer
 
-// This example demonstrates indexing documents using the esutil.BulkIndexer helper.
-//
-// You can configure the settings with command line flags:
-//
-//	go run indexer.go --workers=8 --count=100000 --flush=1000000
 package main
 
 import (
@@ -93,27 +71,12 @@ func main() {
 		humanize.Comma(int64(numItems)), numWorkers, humanize.Bytes(uint64(flushBytes)))
 	log.Println(strings.Repeat("▁", 65))
 
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	//
-	// Use a third-party package for implementing the backoff function
-	//
 	retryBackoff := backoff.NewExponentialBackOff()
-	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	//
-	// Create the Elasticsearch client
-	//
-	// NOTE: For optimal performance, consider using a third-party HTTP transport package.
-	//       See an example in the "benchmarks" folder.
-	//
 	es, err := elasticsearch.New(
-		// Retry on 429 TooManyRequests statuses, up to 5 attempts
-		//
+
 		elasticsearch.WithRetry(5, 502, 503, 504, 429),
 
-		// Configure the backoff function
-		//
 		elasticsearch.WithTransportOptions(
 			elastictransport.WithRetryBackoff(func(i int) time.Duration {
 				if i == 1 {
@@ -126,29 +89,18 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error creating the client: %s", err)
 	}
-	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	//
-	// Create the BulkIndexer
-	//
-	// NOTE: For optimal performance, consider using a third-party JSON decoding package.
-	//       See an example in the "benchmarks" folder.
-	//
 	bi, err := esutil.NewBulkIndexer(esutil.BulkIndexerConfig{
-		Index:         indexName,        // The default index name
-		Client:        es,               // The Elasticsearch client
-		NumWorkers:    numWorkers,       // The number of worker goroutines
-		FlushBytes:    int(flushBytes),  // The flush threshold in bytes
-		FlushInterval: 30 * time.Second, // The periodic flush interval
+		Index:         indexName,
+		Client:        es,
+		NumWorkers:    numWorkers,
+		FlushBytes:    int(flushBytes),
+		FlushInterval: 30 * time.Second,
 	})
 	if err != nil {
 		log.Fatalf("Error creating the indexer: %s", err)
 	}
-	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
-	// Generate the articles collection
-	//
 	names := []string{"Alice", "John", "Mary"}
 	for i := 1; i <= numItems; i++ {
 		articles = append(articles, &Article{
@@ -164,8 +116,6 @@ func main() {
 	}
 	log.Printf("→ Generated %s articles", humanize.Comma(int64(len(articles))))
 
-	// Re-create the index
-	//
 	if res, err = es.Indices.Delete([]string{indexName}, es.Indices.Delete.WithIgnoreUnavailable(true)); err != nil || res.IsError() {
 		log.Fatalf("Cannot delete index: %s", err)
 	}
@@ -181,38 +131,27 @@ func main() {
 
 	start := time.Now().UTC()
 
-	// Loop over the collection
-	//
 	for _, a := range articles {
-		// Prepare the data payload: encode article to JSON
-		//
+
 		data, err := json.Marshal(a)
 		if err != nil {
 			log.Fatalf("Cannot encode article %d: %s", a.ID, err)
 		}
 
-		// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-		//
-		// Add an item to the BulkIndexer
-		//
 		err = bi.Add(
 			context.Background(),
 			esutil.BulkIndexerItem{
-				// Action field configures the operation to perform (index, create, delete, update)
+
 				Action: "index",
 
-				// DocumentID is the (optional) document ID
 				DocumentID: strconv.Itoa(a.ID),
 
-				// Body is an `io.Reader` with the payload
 				Body: bytes.NewReader(data),
 
-				// OnSuccess is called for each successful operation
 				OnSuccess: func(ctx context.Context, item esutil.BulkIndexerItem, res esutil.BulkIndexerResponseItem) {
 					atomic.AddUint64(&countSuccessful, 1)
 				},
 
-				// OnFailure is called for each failed operation
 				OnFailure: func(ctx context.Context, item esutil.BulkIndexerItem, res esutil.BulkIndexerResponseItem, err error) {
 					if err != nil {
 						log.Printf("ERROR: %s", err)
@@ -225,21 +164,15 @@ func main() {
 		if err != nil {
 			log.Fatalf("Unexpected error: %s", err)
 		}
-		// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
+
 	}
 
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-	// Close the indexer
-	//
 	if err := bi.Close(context.Background()); err != nil {
 		log.Fatalf("Unexpected error: %s", err)
 	}
-	// <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 	biStats := bi.Stats()
 
-	// Report the results: number of indexed docs, number of errors, duration, indexing rate
-	//
 	log.Println(strings.Repeat("▔", 65))
 
 	dur := time.Since(start)

@@ -1,29 +1,5 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// Code generated from the elasticsearch-specification DO NOT EDIT.
-// https://github.com/elastic/elasticsearch-specification/tree/37285cbd3fd155f913b50d880b40ec45f9df64b3
-
-// Package valuetype
 package valuetype
 
-import "strings"
-
-// https://github.com/elastic/elasticsearch-specification/blob/37285cbd3fd155f913b50d880b40ec45f9df64b3/specification/_types/aggregations/metric.ts#L463-L474
 type ValueType struct {
 	Name string
 }
@@ -51,39 +27,10 @@ var (
 )
 
 func (v ValueType) MarshalText() (text []byte, err error) {
-	return []byte(v.String()), nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (v *ValueType) UnmarshalText(text []byte) error {
-	switch strings.ReplaceAll(strings.ToLower(string(text)), "\"", "") {
+func (v *ValueType) UnmarshalText(text []byte) error { _ = "STUB: not implemented"; return nil }
 
-	case "string":
-		*v = String
-	case "long":
-		*v = Long
-	case "double":
-		*v = Double
-	case "number":
-		*v = Number
-	case "date":
-		*v = Date
-	case "date_nanos":
-		*v = Datenanos
-	case "ip":
-		*v = Ip
-	case "numeric":
-		*v = Numeric
-	case "geo_point":
-		*v = Geopoint
-	case "boolean":
-		*v = Boolean
-	default:
-		*v = ValueType{string(text)}
-	}
-
-	return nil
-}
-
-func (v ValueType) String() string {
-	return v.Name
-}
+func (v ValueType) String() string { _ = "STUB: not implemented"; return "" }

@@ -1,29 +1,5 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// Code generated from the elasticsearch-specification DO NOT EDIT.
-// https://github.com/elastic/elasticsearch-specification/tree/37285cbd3fd155f913b50d880b40ec45f9df64b3
-
-// Package indexprivilege
 package indexprivilege
 
-import "strings"
-
-// https://github.com/elastic/elasticsearch-specification/blob/37285cbd3fd155f913b50d880b40ec45f9df64b3/specification/security/_types/Privileges.ts#L370-L416
 type IndexPrivilege struct {
 	Name string
 }
@@ -83,71 +59,10 @@ var (
 )
 
 func (i IndexPrivilege) MarshalText() (text []byte, err error) {
-	return []byte(i.String()), nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (i *IndexPrivilege) UnmarshalText(text []byte) error {
-	switch strings.ReplaceAll(strings.ToLower(string(text)), "\"", "") {
+func (i *IndexPrivilege) UnmarshalText(text []byte) error { _ = "STUB: not implemented"; return nil }
 
-	case "all":
-		*i = All
-	case "auto_configure":
-		*i = Autoconfigure
-	case "create":
-		*i = Create
-	case "create_doc":
-		*i = Createdoc
-	case "create_index":
-		*i = Createindex
-	case "create_view":
-		*i = Createview
-	case "cross_cluster_replication":
-		*i = Crossclusterreplication
-	case "cross_cluster_replication_internal":
-		*i = Crossclusterreplicationinternal
-	case "delete":
-		*i = Delete
-	case "delete_index":
-		*i = Deleteindex
-	case "delete_view":
-		*i = Deleteview
-	case "index":
-		*i = Index
-	case "maintenance":
-		*i = Maintenance
-	case "manage":
-		*i = Manage
-	case "manage_data_stream_lifecycle":
-		*i = Managedatastreamlifecycle
-	case "manage_follow_index":
-		*i = Managefollowindex
-	case "manage_ilm":
-		*i = Manageilm
-	case "manage_leader_index":
-		*i = Manageleaderindex
-	case "manage_view":
-		*i = Manageview
-	case "monitor":
-		*i = Monitor
-	case "none":
-		*i = None
-	case "read":
-		*i = Read
-	case "read_cross_cluster":
-		*i = Readcrosscluster
-	case "read_view_metadata":
-		*i = Readviewmetadata
-	case "view_index_metadata":
-		*i = Viewindexmetadata
-	case "write":
-		*i = Write
-	default:
-		*i = IndexPrivilege{string(text)}
-	}
-
-	return nil
-}
-
-func (i IndexPrivilege) String() string {
-	return i.Name
-}
+func (i IndexPrivilege) String() string { _ = "STUB: not implemented"; return "" }

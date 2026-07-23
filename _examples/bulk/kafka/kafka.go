@@ -1,20 +1,3 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 //go:build ignore
 // +build ignore
 
@@ -34,8 +17,6 @@ import (
 	"time"
 
 	_ "net/http/pprof"
-
-	"github.com/dustin/go-humanize"
 
 	"github.com/elastic/elastic-transport-go/v8/elastictransport"
 	"github.com/elastic/go-elasticsearch/v9"
@@ -59,8 +40,8 @@ var (
 	numProducers = 1
 	numConsumers = 4
 	numIndexers  = 1
-	flushBytes   = 0 // Default
-	numWorkers   = 0 // Default
+	flushBytes   = 0
+	numWorkers   = 0
 	indexerError error
 
 	mapping = `{
@@ -93,8 +74,6 @@ func init() {
 func main() {
 	log.SetFlags(0)
 
-	// Serve the "/debug/pprof/" and "/debug/vars" pages
-	//
 	go func() { log.Println(http.ListenAndServe("localhost:6060", nil)) }()
 
 	var (
@@ -110,8 +89,6 @@ func main() {
 	signal.Notify(done, os.Interrupt)
 	go func() { <-done; log.Println(""); os.Exit(0) }()
 
-	// Set up producers
-	//
 	for i := 1; i <= numProducers; i++ {
 		producers = append(producers,
 			&producer.Producer{
@@ -121,8 +98,6 @@ func main() {
 				MessageRate: msgRate})
 	}
 
-	// Create an Elasticsearch client
-	//
 	es, err := elasticsearch.New(
 		elasticsearch.WithRetry(5, 502, 503, 504, 429),
 		elasticsearch.WithTransportOptions(
@@ -134,11 +109,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error creating client: %s", err)
 	}
-	// Export client metrics to the "expvar" package
+
 	expvar.Publish("go-elasticsearch", expvar.Func(func() interface{} { m, _ := es.Metrics(); return m }))
 
-	// Create the "stocks" index with correct mappings
-	//
 	res, err := es.Indices.Exists([]string{indexName})
 	if err != nil {
 		log.Fatalf("Error: Indices.Exists: %s", err)
@@ -158,15 +131,13 @@ func main() {
 		}
 	}
 
-	// Set up indexers
-	//
 	for i := 1; i <= numIndexers; i++ {
 		idx, err := esutil.NewBulkIndexer(esutil.BulkIndexerConfig{
 			Index:      indexName,
 			Client:     es,
 			NumWorkers: numWorkers,
 			FlushBytes: int(flushBytes),
-			// Elastic APM: Instrument the flush operations and capture errors
+
 			OnFlushStart: func(ctx context.Context) context.Context {
 				txn := apm.DefaultTracer.StartTransaction("Bulk", "indexing")
 				return apm.ContextWithTransaction(ctx, txn)
@@ -185,8 +156,6 @@ func main() {
 		indexers = append(indexers, idx)
 	}
 
-	// Set up consumers
-	//
 	for i := 1; i <= numConsumers; i++ {
 		consumers = append(consumers,
 			&consumer.Consumer{
@@ -195,8 +164,6 @@ func main() {
 				Indexer:   indexers[i%numIndexers]})
 	}
 
-	// Set up reporting output
-	//
 	reporter := time.NewTicker(500 * time.Millisecond)
 	defer reporter.Stop()
 	go func() {
@@ -219,16 +186,12 @@ func main() {
 		}
 	}()
 
-	// Create the Kafka topic
-	//
 	if len(producers) > 0 {
 		if err := producers[0].CreateTopic(ctx); err != nil {
 			log.Fatalf("ERROR: Producer: %s", err)
 		}
 	}
 
-	// Launch consumers
-	//
 	for _, c := range consumers {
 		wg.Add(1)
 		go func(c *consumer.Consumer) {
@@ -239,9 +202,7 @@ func main() {
 		}(c)
 	}
 
-	// Launch producers
-	//
-	time.Sleep(5 * time.Second) // Leave some room for consumers to connect
+	time.Sleep(5 * time.Second)
 	for _, p := range producers {
 		wg.Add(1)
 		go func(p *producer.Producer) {
@@ -262,123 +223,6 @@ func report(
 	consumers []*consumer.Consumer,
 	indexers []esutil.BulkIndexer,
 ) string {
-	var (
-		b strings.Builder
-
-		value    string
-		currRow  = 1
-		numCols  = 6
-		colWidth = 20
-
-		divider = func(last bool) {
-			fmt.Fprintf(&b, "\033[%d;0H", currRow)
-			fmt.Fprint(&b, "┣")
-			for i := 1; i <= numCols; i++ {
-				fmt.Fprint(&b, strings.Repeat("━", colWidth))
-				if last && i == 5 {
-					fmt.Fprint(&b, "┷")
-					continue
-				}
-				if i < numCols {
-					fmt.Fprint(&b, "┿")
-				}
-			}
-			fmt.Fprint(&b, "┫")
-			currRow++
-		}
-	)
-
-	fmt.Print("\033[2J\033[K")
-	fmt.Printf("\033[%d;0H", currRow)
-
-	fmt.Fprint(&b, "┏")
-	for i := 1; i <= numCols; i++ {
-		fmt.Fprint(&b, strings.Repeat("━", colWidth))
-		if i < numCols {
-			fmt.Fprint(&b, "┯")
-		}
-	}
-	fmt.Fprint(&b, "┓")
-	currRow++
-
-	for i, p := range producers {
-		fmt.Fprintf(&b, "\033[%d;0H", currRow)
-		value = fmt.Sprintf("Producer %d", i+1)
-		fmt.Fprintf(&b, "┃ %-*s│", colWidth-1, value)
-		s := p.Stats()
-		value = fmt.Sprintf("duration=%s", s.Duration.Truncate(time.Second))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("msg/sec=%s", humanize.FtoaWithDigits(s.Throughput, 2))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("sent=%s", humanize.Comma(int64(s.TotalMessages)))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("bytes=%s", humanize.Bytes(uint64(s.TotalBytes)))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("errors=%s", humanize.Comma(int64(s.TotalErrors)))
-		fmt.Fprintf(&b, " %-*s┃", colWidth-1, value)
-		currRow++
-		divider(i == len(producers)-1)
-	}
-
-	for i, c := range consumers {
-		fmt.Fprintf(&b, "\033[%d;0H", currRow)
-		value = fmt.Sprintf("Consumer %d", i+1)
-		fmt.Fprintf(&b, "┃ %-*s│", colWidth-1, value)
-		s := c.Stats()
-		value = fmt.Sprintf("lagging=%s", humanize.Comma(s.TotalLag))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("msg/sec=%s", humanize.FtoaWithDigits(s.Throughput, 2))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("received=%s", humanize.Comma(s.TotalMessages))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("bytes=%s", humanize.Bytes(uint64(s.TotalBytes)))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("errors=%s", humanize.Comma(s.TotalErrors))
-		fmt.Fprintf(&b, " %-*s┃", colWidth-1, value)
-		currRow++
-		divider(i == len(consumers)-1)
-	}
-
-	for i, x := range indexers {
-		fmt.Fprintf(&b, "\033[%d;0H", currRow)
-		value = fmt.Sprintf("Indexer %d", i+1)
-		fmt.Fprintf(&b, "┃ %-*s│", colWidth-1, value)
-		s := x.Stats()
-		value = fmt.Sprintf("added=%s", humanize.Comma(int64(s.NumAdded)))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("flushed=%s", humanize.Comma(int64(s.NumFlushed)))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		value = fmt.Sprintf("failed=%s", humanize.Comma(int64(s.NumFailed)))
-		fmt.Fprintf(&b, " %-*s│", colWidth-1, value)
-		if indexerError != nil {
-			value = "err=" + indexerError.Error()
-			if len(value) > 2*colWidth {
-				value = value[:2*colWidth]
-			}
-		} else {
-			value = ""
-		}
-		fmt.Fprintf(&b, " %-*s┃", 2*colWidth, value)
-		currRow++
-		if i < len(indexers)-1 {
-			divider(true)
-		}
-	}
-
-	fmt.Fprintf(&b, "\033[%d;0H", currRow)
-	fmt.Fprint(&b, "┗")
-	for i := 1; i <= numCols; i++ {
-		fmt.Fprint(&b, strings.Repeat("━", colWidth))
-		if i == 5 {
-			fmt.Fprint(&b, "━")
-			continue
-		}
-		if i < numCols {
-			fmt.Fprint(&b, "┷")
-		}
-	}
-	fmt.Fprint(&b, "┛")
-	currRow++
-
-	return b.String()
+	_ = "STUB: not implemented"
+	return ""
 }

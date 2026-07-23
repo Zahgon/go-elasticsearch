@@ -1,23 +1,3 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// Code generated from the elasticsearch-specification DO NOT EDIT.
-// https://github.com/elastic/elasticsearch-specification/tree/37285cbd3fd155f913b50d880b40ec45f9df64b3
-
 package esdsl
 
 import "github.com/elastic/go-elasticsearch/v9/typedapi/types"
@@ -26,66 +6,46 @@ type _intervals struct {
 	v *types.Intervals
 }
 
-func NewIntervals() *_intervals {
-	return &_intervals{v: types.NewIntervals()}
-}
+func NewIntervals() *_intervals { _ = "STUB: not implemented"; return nil }
 
 func (s *_intervals) AllOf(allof types.IntervalsAllOfVariant) *_intervals {
-
-	s.v.AllOf = allof.IntervalsAllOfCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_intervals) AnyOf(anyof types.IntervalsAnyOfVariant) *_intervals {
-
-	s.v.AnyOf = anyof.IntervalsAnyOfCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_intervals) Fuzzy(fuzzy types.IntervalsFuzzyVariant) *_intervals {
-
-	s.v.Fuzzy = fuzzy.IntervalsFuzzyCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_intervals) Match(match types.IntervalsMatchVariant) *_intervals {
-
-	s.v.Match = match.IntervalsMatchCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_intervals) Prefix(prefix types.IntervalsPrefixVariant) *_intervals {
-
-	s.v.Prefix = prefix.IntervalsPrefixCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_intervals) Range(range_ types.IntervalsRangeVariant) *_intervals {
-
-	s.v.Range = range_.IntervalsRangeCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_intervals) Regexp(regexp types.IntervalsRegexpVariant) *_intervals {
-
-	s.v.Regexp = regexp.IntervalsRegexpCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_intervals) Wildcard(wildcard types.IntervalsWildcardVariant) *_intervals {
-
-	s.v.Wildcard = wildcard.IntervalsWildcardCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
-func (s *_intervals) IntervalsCaster() *types.Intervals {
-	return s.v
-}
+func (s *_intervals) IntervalsCaster() *types.Intervals { _ = "STUB: not implemented"; return nil }

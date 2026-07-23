@@ -1,28 +1,6 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 //go:build bulk_typed
 // +build bulk_typed
 
-// This example demonstrates indexing documents using the typed Bulk API.
-//
-// You can configure the number of documents and the batch size with command line flags:
-//
-//	go run -tags bulk_typed typed.go -count=10000 -batch=1000
 package main
 
 import (
@@ -149,27 +127,11 @@ func main() {
 }
 
 func setupIndex(ctx context.Context, client *elasticsearch.TypedClient, index string) error {
-	if ok, _ := client.Indices.Exists(index).IsSuccess(ctx); ok {
-		if _, err := client.Indices.Delete(index).Do(ctx); err != nil {
-			return fmt.Errorf("delete index: %w", err)
-		}
-	}
-
-	if _, err := client.Indices.Create(index).Do(ctx); err != nil {
-		return fmt.Errorf("create index: %w", err)
-	}
-
+	_ = "STUB: not implemented"
 	return nil
 }
 
 func countFailedItems(items []map[operationtype.OperationType]types.ResponseItem) int {
-	var failed int
-	for _, item := range items {
-		for _, res := range item {
-			if res.Status > 299 {
-				failed++
-			}
-		}
-	}
-	return failed
+	_ = "STUB: not implemented"
+	return 0
 }

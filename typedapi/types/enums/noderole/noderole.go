@@ -1,29 +1,5 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// Code generated from the elasticsearch-specification DO NOT EDIT.
-// https://github.com/elastic/elasticsearch-specification/tree/37285cbd3fd155f913b50d880b40ec45f9df64b3
-
-// Package noderole
 package noderole
 
-import "strings"
-
-// https://github.com/elastic/elasticsearch-specification/blob/37285cbd3fd155f913b50d880b40ec45f9df64b3/specification/_types/Node.ts#L71-L89
 type NodeRole struct {
 	Name string
 }
@@ -59,47 +35,10 @@ var (
 )
 
 func (n NodeRole) MarshalText() (text []byte, err error) {
-	return []byte(n.String()), nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (n *NodeRole) UnmarshalText(text []byte) error {
-	switch strings.ReplaceAll(strings.ToLower(string(text)), "\"", "") {
+func (n *NodeRole) UnmarshalText(text []byte) error { _ = "STUB: not implemented"; return nil }
 
-	case "master":
-		*n = Master
-	case "data":
-		*n = Data
-	case "data_cold":
-		*n = Datacold
-	case "data_content":
-		*n = Datacontent
-	case "data_frozen":
-		*n = Datafrozen
-	case "data_hot":
-		*n = Datahot
-	case "data_warm":
-		*n = Datawarm
-	case "client":
-		*n = Client
-	case "ingest":
-		*n = Ingest
-	case "ml":
-		*n = Ml
-	case "voting_only":
-		*n = Votingonly
-	case "transform":
-		*n = Transform
-	case "remote_cluster_client":
-		*n = Remoteclusterclient
-	case "coordinating_only":
-		*n = Coordinatingonly
-	default:
-		*n = NodeRole{string(text)}
-	}
-
-	return nil
-}
-
-func (n NodeRole) String() string {
-	return n.Name
-}
+func (n NodeRole) String() string { _ = "STUB: not implemented"; return "" }

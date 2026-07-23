@@ -1,29 +1,5 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// Code generated from the elasticsearch-specification DO NOT EDIT.
-// https://github.com/elastic/elasticsearch-specification/tree/37285cbd3fd155f913b50d880b40ec45f9df64b3
-
-// Package phoneticencoder
 package phoneticencoder
 
-import "strings"
-
-// https://github.com/elastic/elasticsearch-specification/blob/37285cbd3fd155f913b50d880b40ec45f9df64b3/specification/_types/analysis/phonetic-plugin.ts#L23-L36
 type PhoneticEncoder struct {
 	Name string
 }
@@ -55,43 +31,10 @@ var (
 )
 
 func (p PhoneticEncoder) MarshalText() (text []byte, err error) {
-	return []byte(p.String()), nil
+	_ = "STUB: not implemented"
+	return nil, nil
 }
 
-func (p *PhoneticEncoder) UnmarshalText(text []byte) error {
-	switch strings.ReplaceAll(strings.ToLower(string(text)), "\"", "") {
+func (p *PhoneticEncoder) UnmarshalText(text []byte) error { _ = "STUB: not implemented"; return nil }
 
-	case "metaphone":
-		*p = Metaphone
-	case "double_metaphone":
-		*p = Doublemetaphone
-	case "soundex":
-		*p = Soundex
-	case "refined_soundex":
-		*p = Refinedsoundex
-	case "caverphone1":
-		*p = Caverphone1
-	case "caverphone2":
-		*p = Caverphone2
-	case "cologne":
-		*p = Cologne
-	case "nysiis":
-		*p = Nysiis
-	case "koelnerphonetik":
-		*p = Koelnerphonetik
-	case "haasephonetik":
-		*p = Haasephonetik
-	case "beider_morse":
-		*p = Beidermorse
-	case "daitch_mokotoff":
-		*p = Daitchmokotoff
-	default:
-		*p = PhoneticEncoder{string(text)}
-	}
-
-	return nil
-}
-
-func (p PhoneticEncoder) String() string {
-	return p.Name
-}
+func (p PhoneticEncoder) String() string { _ = "STUB: not implemented"; return "" }

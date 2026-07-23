@@ -1,20 +1,3 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
 package main
 
 import (
@@ -88,7 +71,6 @@ func main() {
 	for _, a := range articles {
 		b.Reset()
 
-		// Encode article to JSON
 		if _, err := easyjson.MarshalToWriter(a, &b); err != nil {
 			red.Println("Error decoding response", err)
 			continue
@@ -98,7 +80,6 @@ func main() {
 			"articles",
 			bytes.NewReader(b.Bytes()),
 			es.Index.WithDocumentID(strconv.Itoa(int(a.ID))),
-			// es.Index.WithVersion(-1), // <-- Uncomment to trigger error response
 		)
 		if err != nil {
 			red.Printf("Error indexing article: %s\n", err)
@@ -134,7 +115,6 @@ func main() {
 	res, err := es.Search(
 		es.Search.WithIndex("articles"),
 		es.Search.WithQuery("one OR two"),
-		// es.Search.WithQuery("{{{one OR two"), // <-- Uncomment to trigger error response
 	)
 	if err != nil {
 		red.Printf("Error searching articles: %s\n", err)
@@ -166,18 +146,4 @@ func main() {
 	}
 }
 
-// printErrorResponse decodes the response from Elasticsearch
-// and prints it formatted to STDOUT.
-func printErrorResponse(res *esapi.Response) {
-	bold.Printf("[%s] ", res.Status())
-
-	var e model.ErrorResponse
-	if err := easyjson.UnmarshalFromReader(res.Body, &e); err != nil {
-		red.Println("Error decoding response:", err)
-		return
-	}
-
-	boldRed.Print(e.Info.RootCause[0].Type)
-	faint.Print(" > ")
-	fmt.Println(e.Info.RootCause[0].Reason)
-}
+func printErrorResponse(res *esapi.Response) { _ = "STUB: not implemented"; return }

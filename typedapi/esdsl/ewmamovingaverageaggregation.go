@@ -1,23 +1,3 @@
-// Licensed to Elasticsearch B.V. under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Elasticsearch B.V. licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//    http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
-
-// Code generated from the elasticsearch-specification DO NOT EDIT.
-// https://github.com/elastic/elasticsearch-specification/tree/37285cbd3fd155f913b50d880b40ec45f9df64b3
-
 package esdsl
 
 import (
@@ -30,71 +10,51 @@ type _ewmaMovingAverageAggregation struct {
 }
 
 func NewEwmaMovingAverageAggregation(settings types.EwmaModelSettingsVariant) *_ewmaMovingAverageAggregation {
-
-	tmp := &_ewmaMovingAverageAggregation{v: types.NewEwmaMovingAverageAggregation()}
-
-	tmp.Settings(settings)
-
-	return tmp
-
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) Settings(settings types.EwmaModelSettingsVariant) *_ewmaMovingAverageAggregation {
-
-	s.v.Settings = *settings.EwmaModelSettingsCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) BucketsPath(bucketspath types.BucketsPathVariant) *_ewmaMovingAverageAggregation {
-
-	s.v.BucketsPath = *bucketspath.BucketsPathCaster()
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) Format(format string) *_ewmaMovingAverageAggregation {
-
-	s.v.Format = &format
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) GapPolicy(gappolicy gappolicy.GapPolicy) *_ewmaMovingAverageAggregation {
-
-	s.v.GapPolicy = &gappolicy
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) Minimize(minimize bool) *_ewmaMovingAverageAggregation {
-
-	s.v.Minimize = &minimize
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) Predict(predict int) *_ewmaMovingAverageAggregation {
-
-	s.v.Predict = &predict
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) Window(window int) *_ewmaMovingAverageAggregation {
-
-	s.v.Window = &window
-
-	return s
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) AggregationsCaster() *types.Aggregations {
-	container := types.NewAggregations()
-
-	container.MovingAvg = s.v
-
-	return container
+	_ = "STUB: not implemented"
+	return nil
 }
 
 func (s *_ewmaMovingAverageAggregation) EwmaMovingAverageAggregationCaster() *types.EwmaMovingAverageAggregation {
-	return s.v
+	_ = "STUB: not implemented"
+	return nil
 }
